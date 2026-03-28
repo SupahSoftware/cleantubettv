@@ -1,0 +1,49 @@
+/* Button inside the player */
+#cleantube-ttv-btn {
+  position: absolute;
+  bottom: 80px;
+  right: 24px;
+  z-index: 999999;
+  background: #9146ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  transition: opacity 0.3s, background 0.2s;
+  pointer-events: auto;
+}
+
+#cleantube-ttv-btn:hover {
+  background: #7c3aed;
+}
+
+/* Hide button when YouTube hides its controls */
+.ytp-autohide #cleantube-ttv-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.cleantube-active {
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #000 !important;
+}
+
+/* Chat iframe pinned to the right */
+#cleantube-chat-panel {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 440px !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  border: none !important;
+  background: #18181b;
+}
