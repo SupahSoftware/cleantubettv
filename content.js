@@ -119,6 +119,14 @@
       el.style.setProperty("width", width, "important");
     }
     updateChatToggleIcon();
+
+    // YouTube's player sizes the <video> element via JS, not CSS, so it needs
+    // a resize event to recompute dimensions after the container width changes.
+    const player = document.querySelector("#movie_player");
+    if (player && typeof player.setSize === "function") {
+      player.setSize();
+    }
+    window.dispatchEvent(new Event("resize"));
   }
 
   function updateChatToggleIcon() {
