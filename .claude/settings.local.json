@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -Command \"Get-Command Compress-Archive\")",
+      "Bash(powershell.exe -Command \"Compress-Archive -Path manifest.json,content.js,styles.css,icon48.png,icon128.png -DestinationPath cleantube-ttv.zip -Force\")"
+    ]
+  }
+}

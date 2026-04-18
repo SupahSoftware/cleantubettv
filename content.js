@@ -2,10 +2,18 @@
   "use strict";
 
   let active = false;
+  let chatVisible = true;
   let btn = null;
+  let chatToggleBtn = null;
   let chatIframe = null;
   const hiddenElements = [];
   const styledElements = [];
+  const ancestorElements = [];
+
+  const CHAT_ON_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  const CHAT_OFF_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="3" y1="3" x2="21" y2="21"/></svg>';
 
   function getTwitchChannel() {
     return localStorage.getItem("cleantube-ttv-channel") || "";
@@ -60,6 +68,7 @@
     node = player.parentElement;
     while (node && node !== document.body) {
       styledElements.push({ el: node, prev: node.getAttribute("style") || "" });
+      ancestorElements.push(node);
       node.style.setProperty("position", "fixed", "important");
       node.style.setProperty("top", "0", "important");
       node.style.setProperty("left", "0", "important");
@@ -91,8 +100,35 @@
     document.body.classList.add("cleantube-active");
 
     active = true;
+    chatVisible = true;
     btn.textContent = "Exit Clean View";
     btn.style.background = "#ef4444";
+    if (chatToggleBtn) {
+      chatToggleBtn.style.display = "flex";
+      updateChatToggleIcon();
+    }
+  }
+
+  function setChatVisible(visible) {
+    chatVisible = visible;
+    if (chatIframe) {
+      chatIframe.style.display = visible ? "" : "none";
+    }
+    const width = visible ? "calc(100vw - 440px)" : "100vw";
+    for (const el of ancestorElements) {
+      el.style.setProperty("width", width, "important");
+    }
+    updateChatToggleIcon();
+  }
+
+  function updateChatToggleIcon() {
+    if (!chatToggleBtn) return;
+    chatToggleBtn.innerHTML = chatVisible ? CHAT_OFF_SVG : CHAT_ON_SVG;
+    chatToggleBtn.title = chatVisible ? "Hide chat" : "Show chat";
+  }
+
+  function toggleChat() {
+    setChatVisible(!chatVisible);
   }
 
   function deactivate() {
@@ -115,6 +151,7 @@
       }
     }
     styledElements.length = 0;
+    ancestorElements.length = 0;
 
     // Remove chat iframe
     if (chatIframe) {
@@ -125,8 +162,12 @@
     document.body.classList.remove("cleantube-active");
 
     active = false;
+    chatVisible = true;
     btn.textContent = "Clean View + TTV";
     btn.style.background = "#9146ff";
+    if (chatToggleBtn) {
+      chatToggleBtn.style.display = "none";
+    }
   }
 
   function toggle() {
@@ -142,6 +183,9 @@
     if (player && btn && btn.parentElement !== player) {
       player.appendChild(btn);
     }
+    if (player && chatToggleBtn && chatToggleBtn.parentElement !== player) {
+      player.appendChild(chatToggleBtn);
+    }
   }
 
   function createButton() {
@@ -152,17 +196,25 @@
     btn.textContent = "Clean View + TTV";
     btn.addEventListener("click", toggle);
 
+    chatToggleBtn = document.createElement("button");
+    chatToggleBtn.id = "cleantube-chat-toggle-btn";
+    chatToggleBtn.addEventListener("click", toggleChat);
+    updateChatToggleIcon();
+
     // Try to place inside the player immediately, fall back to body
     const player = document.querySelector("#movie_player");
     if (player) {
       player.appendChild(btn);
+      player.appendChild(chatToggleBtn);
     } else {
       document.body.appendChild(btn);
+      document.body.appendChild(chatToggleBtn);
       // Retry when player appears
       const obs = new MutationObserver(() => {
         const p = document.querySelector("#movie_player");
         if (p) {
           p.appendChild(btn);
+          p.appendChild(chatToggleBtn);
           obs.disconnect();
         }
       });

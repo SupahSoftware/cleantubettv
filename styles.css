@@ -23,8 +23,35 @@
   background: #7c3aed;
 }
 
-/* Hide button when YouTube hides its controls */
-.ytp-autohide #cleantube-ttv-btn {
+/* Chat toggle button, sits to the left of the main button */
+#cleantube-chat-toggle-btn {
+  position: absolute;
+  bottom: 80px;
+  right: 180px;
+  z-index: 999999;
+  background: #9146ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  transition: opacity 0.3s, background 0.2s;
+  pointer-events: auto;
+}
+
+#cleantube-chat-toggle-btn:hover {
+  background: #7c3aed;
+}
+
+/* Hide buttons when YouTube hides its controls */
+.ytp-autohide #cleantube-ttv-btn,
+.ytp-autohide #cleantube-chat-toggle-btn {
   opacity: 0;
   pointer-events: none;
 }
